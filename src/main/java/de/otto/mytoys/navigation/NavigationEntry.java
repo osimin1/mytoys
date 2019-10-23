@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @ToString
@@ -15,7 +16,8 @@ import java.util.List;
 public class NavigationEntry {
     private String type;
     private String label;
-    private String url;
+    @Builder.Default
+    private Optional<String> url = Optional.empty();
 
     private List<NavigationEntry> children;
 }

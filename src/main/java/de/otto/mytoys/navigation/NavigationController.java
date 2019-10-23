@@ -31,12 +31,12 @@ public class NavigationController {
     }
 
     @GetMapping("/links")
-    public ResponseEntity<String> getLinksEntries(@RequestHeader(value = "x-api-key") String apiKey) {
+    public ResponseEntity<List<Link>> getLinksEntries(@RequestHeader(value = "x-api-key") String apiKey) {
         if (apiKeyService.isProvidedKeyInCorrect(apiKey)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        List<NavigationEntry> links = navigationService.getLinks();
-        return ResponseEntity.ok().body(links.toString());
+        List<Link> links = navigationService.getLinks();
+        return ResponseEntity.ok().body(links);
     }
 }

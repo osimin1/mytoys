@@ -1,12 +1,12 @@
 package de.otto.mytoys.navigation;
 
+import org.springframework.hateoas.Links;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -42,13 +42,13 @@ public class NavigationService {
         final NavigationEntry twoToThreeLink = NavigationEntry.builder()
                 .type("link")
                 .label("2-3 Jahre")
-                .url("http://www.mytoys.de/24-47-months/")
+                .url(java.util.Optional.of("http://www.mytoys.de/24-47-months/"))
                 .build();
 
         final NavigationEntry fourToFiveLink = NavigationEntry.builder()
                 .type("link")
                 .label("4-5 Jahre")
-                .url("http://www.mytoys.de/48-71-months/")
+                .url(java.util.Optional.of("http://www.mytoys.de/48-71-months/"))
                 .build();
 
         return Arrays.asList(twoToThreeLink, fourToFiveLink);
@@ -74,25 +74,40 @@ public class NavigationService {
         final NavigationEntry zeroToSixMonths = NavigationEntry.builder()
                 .type("link")
                 .label("0-6 Monate")
-                .url("http://www.mytoys.de/0-6-months/")
+                .url(java.util.Optional.of("http://www.mytoys.de/0-6-months/"))
                 .build();
 
         final NavigationEntry sevenToTwelveMonths = NavigationEntry.builder()
                 .type("link")
                 .label("7-12 Monate")
-                .url("http://www.mytoys.de/7-12-months/")
+                .url(java.util.Optional.of("http://www.mytoys.de/7-12-months/"))
                 .build();
 
         final NavigationEntry thirteenToTwenty4Months = NavigationEntry.builder()
                 .type("link")
                 .label("13-24 Monate")
-                .url("http://www.mytoys.de/13-24-months/")
+                .url(java.util.Optional.of("http://www.mytoys.de/13-24-months/"))
                 .build();
 
         return Arrays.asList(zeroToSixMonths, sevenToTwelveMonths, thirteenToTwenty4Months);
     }
 
-    public List<NavigationEntry> getLinks() {
-        return new ArrayList<>();
+    public List<Link> getLinks() {
+        List<Link> links = new ArrayList<>();
+        final List<NavigationEntry> allEntries = getAllEntries();
+        allEntries.forEach(navigationEntry -> {
+                    Link link = new Link();
+                    iterateEntires(link, navigationEntry);
+                    links.add(link);
+                }
+
+        );
+        return links;
+    }
+
+    private void iterateEntires(Link link, NavigationEntry navigationEntry) {
+        link.setLabel(String.join(" - ", link.getLabel(), navigationEntry.getLabel()));
+        navigationEntry.getUrl().ifPresentOrElse(url -> link.setUrl(url), () ->
+                navigationEntry.getChildren().forEach(children -> iterateEntires(link, children)));
     }
 }
