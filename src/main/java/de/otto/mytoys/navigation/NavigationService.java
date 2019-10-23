@@ -97,8 +97,12 @@ public class NavigationService {
         final List<NavigationEntry> allEntries = getAllEntries();
         allEntries.forEach(navigationEntry -> {
                     Link link = new Link();
-                    iterateEntires(link, navigationEntry);
-                    links.add(link);
+                    link.setLabel(navigationEntry.getLabel());
+                    navigationEntry.getUrl().ifPresentOrElse(url -> {
+                        link.setUrl(url);
+                        links.add(link);
+                        }, () ->
+                            navigationEntry.getChildren().forEach(children -> iterateEntires(link, children)));
                 }
 
         );
