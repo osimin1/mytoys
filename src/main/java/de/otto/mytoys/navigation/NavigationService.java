@@ -2,9 +2,11 @@ package de.otto.mytoys.navigation;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -90,4 +92,7 @@ public class NavigationService {
         return Arrays.asList(zeroToSixMonths, sevenToTwelveMonths, thirteenToTwenty4Months);
     }
 
+    public List<NavigationEntry> getLinks() {
+        return new ArrayList<>();
+    }
 }

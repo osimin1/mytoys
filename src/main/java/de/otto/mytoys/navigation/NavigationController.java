@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @Data
@@ -27,5 +28,15 @@ public class NavigationController {
 
         List<NavigationEntry> navigationEntries = navigationService.getAllEntries();
         return ResponseEntity.ok().body(new NavigationEntries(navigationEntries));
+    }
+
+    @GetMapping("/links")
+    public ResponseEntity<String> getLinksEntries(@RequestHeader(value = "x-api-key") String apiKey) {
+        if (apiKeyService.isProvidedKeyInCorrect(apiKey)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        List<NavigationEntry> links = navigationService.getLinks();
+        return ResponseEntity.ok().body(links.toString());
     }
 }

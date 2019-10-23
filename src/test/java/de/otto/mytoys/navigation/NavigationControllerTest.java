@@ -28,7 +28,7 @@ public class NavigationControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void thatOnlyRequestWithCorrectApiKeyIsAccepted() throws Exception {
+    public void thatOnlyRequestWithCorrectApiKeyAreAccepted() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/navigation"))
                 .andExpect(status().isBadRequest());
@@ -44,9 +44,9 @@ public class NavigationControllerTest {
     }
 
     @Test
-    public void thatCorrectNavigationEntriesAreReturned() throws Exception {
+    public void thatNavigationEntriesAreCorrect() throws Exception {
         // given
-        final String expected = getNavigationEntriesAsJson();
+        final String expected = getJsonFromFile("navigation.json");
 
         //when
         final MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/navigation")
@@ -59,8 +59,23 @@ public class NavigationControllerTest {
 
     }
 
-    private String getNavigationEntriesAsJson() throws FileNotFoundException {
-        File inJson = new File("src/test/resources/navigation.json");
+    @Test
+    public void thatLinksEntriesAreCorrect() throws Exception {
+        // given
+        final String expected = getJsonFromFile("links.json");
+
+        //when
+        final MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/links")
+                .header("x-api-key", "hz7JPdKK069Ui1TRxxd1k8BQcocSVDkj219DVzzD"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        //then
+        assertThat(mvcResult.getResponse().getContentAsString()).isEqualToIgnoringWhitespace(expected);
+    }
+
+    private String getJsonFromFile(String filename) throws FileNotFoundException {
+        File inJson = new File("src/test/resources/" + filename);
 
         InputStream inputStream = new FileInputStream(inJson);
 
