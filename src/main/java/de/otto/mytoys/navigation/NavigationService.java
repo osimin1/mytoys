@@ -1,6 +1,6 @@
 package de.otto.mytoys.navigation;
 
-import org.springframework.hateoas.Links;
+import jdk.internal.joptsimple.internal.Strings;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -42,13 +42,13 @@ public class NavigationService {
         final NavigationEntry twoToThreeLink = NavigationEntry.builder()
                 .type("link")
                 .label("2-3 Jahre")
-                .url(java.util.Optional.of("http://www.mytoys.de/24-47-months/"))
+                .url("http://www.mytoys.de/24-47-months/")
                 .build();
 
         final NavigationEntry fourToFiveLink = NavigationEntry.builder()
                 .type("link")
                 .label("4-5 Jahre")
-                .url(java.util.Optional.of("http://www.mytoys.de/48-71-months/"))
+                .url("http://www.mytoys.de/48-71-months/")
                 .build();
 
         return Arrays.asList(twoToThreeLink, fourToFiveLink);
@@ -74,44 +74,49 @@ public class NavigationService {
         final NavigationEntry zeroToSixMonths = NavigationEntry.builder()
                 .type("link")
                 .label("0-6 Monate")
-                .url(java.util.Optional.of("http://www.mytoys.de/0-6-months/"))
+                .url("http://www.mytoys.de/0-6-months/")
                 .build();
 
         final NavigationEntry sevenToTwelveMonths = NavigationEntry.builder()
                 .type("link")
                 .label("7-12 Monate")
-                .url(java.util.Optional.of("http://www.mytoys.de/7-12-months/"))
+                .url("http://www.mytoys.de/7-12-months/")
                 .build();
 
         final NavigationEntry thirteenToTwenty4Months = NavigationEntry.builder()
                 .type("link")
                 .label("13-24 Monate")
-                .url(java.util.Optional.of("http://www.mytoys.de/13-24-months/"))
+                .url("http://www.mytoys.de/13-24-months/")
                 .build();
 
         return Arrays.asList(zeroToSixMonths, sevenToTwelveMonths, thirteenToTwenty4Months);
     }
 
     public List<Link> getLinks() {
-        List<Link> links = new ArrayList<>();
+        List<Link> linkList = new ArrayList<>();
         final List<NavigationEntry> allEntries = getAllEntries();
         allEntries.forEach(navigationEntry -> {
-                    Link link = new Link();
-                    link.setLabel(navigationEntry.getLabel());
-                    navigationEntry.getUrl().ifPresentOrElse(url -> {
-                        link.setUrl(url);
-                        links.add(link);
-                        }, () ->
-                            navigationEntry.getChildren().forEach(children -> iterateEntires(link, children)));
+                    createLinks(navigationEntry, linkList);
                 }
 
         );
-        return links;
+        return linkList;
     }
 
-    private void iterateEntires(Link link, NavigationEntry navigationEntry) {
-        link.setLabel(String.join(" - ", link.getLabel(), navigationEntry.getLabel()));
-        navigationEntry.getUrl().ifPresentOrElse(url -> link.setUrl(url), () ->
-                navigationEntry.getChildren().forEach(children -> iterateEntires(link, children)));
+    private void createLinks(NavigationEntry navigationEntry, List<Link> linkList) {
+        final String parentLabel = navigationEntry.getLabel().orElse(Strings.EMPTY);
+        createLinkOrCheckChildren(navigationEntry, linkList, parentLabel);
+    }
+
+    private void createLinkOrCheckChildren(NavigationEntry navigationEntry, List<Link> linkList, String parentLabel) {
+        navigationEntry.getUrl().ifPresentOrElse(url ->
+                                linkList.add(Link.builder().label(parentLabel).url(url).build())
+                        , () ->
+                        navigationEntry.getChildren().forEach(children -> createLinksFromChildren(parentLabel, linkList, children)));
+    }
+
+    private void createLinksFromChildren(String parentLabel, List<Link> linkList, NavigationEntry navigationEntry) {
+        String jointLabel = String.join(" - ", parentLabel, navigationEntry.getLabel().orElse(Strings.EMPTY));
+        createLinkOrCheckChildren(navigationEntry,linkList , jointLabel);
     }
 }

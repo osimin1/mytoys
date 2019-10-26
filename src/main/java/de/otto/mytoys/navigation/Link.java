@@ -1,10 +1,13 @@
 package de.otto.mytoys.navigation;
 
-import jdk.internal.joptsimple.internal.Strings;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
+import lombok.ToString;
 
-@Data
+@Builder
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class Link {
-    String label = Strings.EMPTY;
-    String url = Strings.EMPTY;
+    String label;
+    String url;
 }
