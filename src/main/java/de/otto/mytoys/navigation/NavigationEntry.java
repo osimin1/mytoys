@@ -13,7 +13,6 @@ import java.util.Optional;
 public class NavigationEntry {
     private String type;
     private String label;
-    @Builder.Default
     private String url;
     private List<NavigationEntry> children;
 
@@ -25,8 +24,8 @@ public class NavigationEntry {
         return Optional.ofNullable(url);
     }
 
-    public List<NavigationEntry> getChildren() {
-        return children;
+    public Optional<List<NavigationEntry>> getChildren() {
+        return Optional.ofNullable(children);
     }
 
     public Optional<String> getType() {

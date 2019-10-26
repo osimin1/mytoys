@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,22 +22,27 @@ public class NavigationController {
     private NavigationService navigationService;
 
     @GetMapping("/api/navigation")
-    public ResponseEntity<NavigationEntries> getNavigationEntries(@RequestHeader(value = "x-api-key") String apiKey) {
+    public ResponseEntity<NavigationResult> getNavigationEntries(@RequestHeader(value = "x-api-key") String apiKey) {
         if (apiKeyService.isProvidedKeyInCorrect(apiKey)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         List<NavigationEntry> navigationEntries = navigationService.getAllEntries();
-        return ResponseEntity.ok().body(new NavigationEntries(navigationEntries));
+        return ResponseEntity.ok().body(new NavigationResult(navigationEntries));
     }
 
     @GetMapping("/links")
-    public ResponseEntity<List<Link>> getLinksEntries(@RequestHeader(value = "x-api-key") String apiKey) {
+    public ResponseEntity<List<Link>> getLinksEntries(@RequestHeader(value = "x-api-key") String apiKey,
+                                                      @RequestParam("parent") Optional<String> parent) {
         if (apiKeyService.isProvidedKeyInCorrect(apiKey)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-
-        List<Link> links = navigationService.getLinks();
+        List<Link> links;
+        if (parent.isPresent()) {
+            links = navigationService.getLinksWithParent(parent.get());
+        } else {
+            links = navigationService.getLinks();
+        }
         return ResponseEntity.ok().body(links);
     }
 }

@@ -7,6 +7,6 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class NavigationEntries {
+public class NavigationResult {
     List<NavigationEntry> navigationEntries;
 }

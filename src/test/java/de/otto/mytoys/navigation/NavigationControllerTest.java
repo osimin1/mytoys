@@ -74,6 +74,38 @@ public class NavigationControllerTest {
         assertThat(mvcResult.getResponse().getContentAsString()).isEqualToIgnoringWhitespace(expected);
     }
 
+    @Test
+    public void thatLinksEntriesWithParentAlterAreCorrect() throws Exception {
+        // given
+        final String expected = getJsonFromFile("linksWithParentAlter.json");
+
+        //when
+        final MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/links")
+                .param("parent","Alter")
+                .header("x-api-key", "hz7JPdKK069Ui1TRxxd1k8BQcocSVDkj219DVzzD"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        //then
+        assertThat(mvcResult.getResponse().getContentAsString()).isEqualToIgnoringWhitespace(expected);
+    }
+
+    @Test
+    public void thatLinksEntriesWithParentBabyAndKleinkindAreCorrect() throws Exception {
+        // given
+        final String expected = getJsonFromFile("linksWithParentBabyAndKleinkind.json");
+
+        //when
+        final MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/links")
+                .param("parent","Baby & Kleinkind")
+                .header("x-api-key", "hz7JPdKK069Ui1TRxxd1k8BQcocSVDkj219DVzzD"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        //then
+        assertThat(mvcResult.getResponse().getContentAsString()).isEqualToIgnoringWhitespace(expected);
+    }
+
     private String getJsonFromFile(String filename) throws FileNotFoundException {
         File inJson = new File("src/test/resources/" + filename);
 
