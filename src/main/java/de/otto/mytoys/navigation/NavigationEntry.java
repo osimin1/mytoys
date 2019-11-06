@@ -2,18 +2,17 @@ package de.otto.mytoys.navigation;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
-import lombok.ToString;
 
 import java.util.List;
 import java.util.Optional;
 
-@ToString
 @Builder
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
 public class NavigationEntry {
     private String type;
     private String label;
     private String url;
+
     private List<NavigationEntry> children;
 
     public Optional<String> getLabel() {
