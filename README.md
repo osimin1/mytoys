@@ -15,7 +15,7 @@ If you use the correct api-key of course :P
 
 ###  How I approached the work
 I used TDD to fulfill the requirements. So first I wrote a MockMvcTest in order test one requirement and implemented that afterwards.
-That led to a “minimal” service which implements only the asked requirement and has 100% test coverage.
+That led to a “minimal” service which implements only the asked requirement and has an almost 100% test coverage.
 But this coverage is only accomplished with Integration tests which are slow and alone are not optimal.
 The next step would be to implement unit tests in order to test edge cases like null values or min/max values.
 Furthermore is the service missing the feature to save further links or navigationEntries. 
